@@ -14,7 +14,7 @@ class CreateRequestsTable extends Migration
      */
     public function up()
     {
-        Schema::create('requests', function (Blueprint $table) {
+        Schema::create('adoption_requests', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             $table->foreignId('animal_id')->constrained('animals');
@@ -22,7 +22,7 @@ class CreateRequestsTable extends Migration
             $table->string('status')->default('Pending');
         });
 
-        DB::statement('ALTER TABLE requests ADD CONSTRAINT check_request_status CHECK (status IN (\'Pending\', \'Approved\', \'Denied\'))');
+        DB::statement('ALTER TABLE adoption_requests ADD CONSTRAINT check_request_status CHECK (status IN (\'Pending\', \'Approved\', \'Denied\'))');
     }
 
     /**
@@ -32,6 +32,6 @@ class CreateRequestsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('requests');
+        Schema::dropIfExists('adoption_requests');
     }
 }

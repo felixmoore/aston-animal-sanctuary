@@ -21,8 +21,9 @@ class CreateAnimalsTable extends Migration
             $table->string('breed');
             $table->string('colour');
             $table->integer('age');
-            $table->foreignId('owner_id')->constrained('users')->nullable()->default(NULL);
+            $table->foreignId('owner_id')->constrained('users')->nullable();
             $table->boolean('available')->default(TRUE);
+            $table->string('image')->nullable();
             $table->timestamps();
         });
 

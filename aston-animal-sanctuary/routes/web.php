@@ -2,7 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
-
+use App\Http\Controllers\AnimalController;
+use App\Http\Controllers\RequestController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -33,8 +34,10 @@ Route::get('/dashboard', function () {
     return view('dashboard', ['animals' => $animals]);
 })->middleware(['auth'])->name('dashboard');
 
-Route::get('list', 'App\Http\Controllers\UserController@list');
-Route::get('show/{id}', 'App\Http\Controllers\UserController@show');
-// Route::get('animals/index-paging', 'App\Http\Controllers\AnimalController@indexPaging');
-Route::get('animals', 'AnimalController@index');
+// Route::get('list', 'App\Http\Controllers\UserController@list');
+// Route::get('show/{id}', 'App\Http\Controllers\UserController@show');
+
+Route::resource('animals', AnimalController::class);
+Route::resource('requests', RequestController::class);
+
 require __DIR__.'/auth.php';
