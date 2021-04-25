@@ -79,12 +79,21 @@
                                 class="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
                                 name="colour" value="{{ old('colour') ? old('colour') : '' }}" placeholder="Colour" />
                         </div>
-
+                       
                         <div class="flex flex-col">
                             <label class="leading-loose">Image</label>
-                            <input type="file"
+
+                            <input type="file" name="images[]" multiple class="form-control px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600" accept="image/*">
+                            @if ($errors->has('files'))
+                              @foreach ($errors->get('files') as $error)
+                              <span class="invalid-feedback" role="alert">
+                                  <strong>{{ $error }}</strong>
+                              </span>
+                              @endforeach
+                            @endif
+                            {{-- <input type="file"
                                 class="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
-                                name="image" placeholder="Image file" />
+                                name="image" placeholder="Image file" /> --}}
                         </div>
 
                         <div class="flex flex-col ">

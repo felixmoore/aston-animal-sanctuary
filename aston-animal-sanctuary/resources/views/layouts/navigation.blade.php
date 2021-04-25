@@ -5,27 +5,32 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="flex-shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
+                    <a href="{{ route('home') }}">
                         <x-application-logo class="block h-10 w-auto fill-current text-gray-600" />
                     </a>
                 </div>
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                    {{-- <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
-                    </x-nav-link>
+                    </x-nav-link> --}}
                     <x-nav-link :href="url('animals')">
                         {{ __('Animals') }}
                     </x-nav-link>
-                    @if (Auth::user() != NULL && Auth::user()->type == 'Staff' )
-                    <x-nav-link :href="url('animals/create')">
-                        {{ __('Create') }}
-                    </x-nav-link>
+                    @if (Auth::user() != NULL) 
+                    @if (Auth::user()->type == 1 )
+                        <x-nav-link :href="url('animals/create')">
+                            {{ __('Create') }}
+                        </x-nav-link>
                     @endif
                     <x-nav-link :href="url('requests')">
                         {{ __('Requests') }}
                     </x-nav-link>
+                @endif
+
+
+                    
                 </div>
             </div>
 
@@ -49,14 +54,10 @@
                                 <x-nav-link :href="route('login')" :active="request()->routeIs('login')">
                                     {{ __('Login') }}
                                 </x-nav-link>
-                                    {{-- <a href="{{ route('login') }}"
-                                        class="text-gray-700 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Log
-                                        in</a> --}}
+                                    
             
                                     @if (Route::has('register'))
-                                        {{-- <a href="{{ route('register') }}"
-                                            class="text-gray-700 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Register</a> --}}
-                                            <x-nav-link :href="route('register')" :active="request()->routeIs('register')">
+                                           <x-nav-link :href="route('register')" :active="request()->routeIs('register')">
                                                 {{ __('Register') }}
                                             </x-nav-link>
                                     
@@ -73,7 +74,7 @@
                             @endif
                         </button>
                     </x-slot>
-                    {{-- @if (Auth::user() != NULL) --}}
+     
                     <x-slot name="content">
                         <!-- Authentication -->
                         @if (Auth::user() != NULL)
@@ -89,7 +90,7 @@
                         @endif
                     </x-slot>
                     
-                    {{-- @endif --}}
+               
                 </x-dropdown>
                 
             </div>
@@ -109,20 +110,22 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+            {{-- <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
-            </x-responsive-nav-link>
+            </x-responsive-nav-link> --}}
             <x-responsive-nav-link :href="url('animals')">
                 {{ __('Animals') }}
             </x-responsive-nav-link>
-            @if (Auth::user() != NULL && Auth::user()->type == 'Staff' )
-            <x-responsive-nav-link :href="url('animals/create')">
-                {{ __('Create') }}
-            </x-responsive-nav-link>
-            @endif
+            @if (Auth::user() != NULL) 
+                @if (Auth::user()->type == 1 )
+                    <x-responsive-nav-link :href="url('animals/create')">
+                        {{ __('Create') }}
+                    </x-responsive-nav-link>
+                @endif
             <x-responsive-nav-link :href="url('requests')">
                 {{ __('Requests') }}
             </x-responsive-nav-link>
+            @endif
         </div>
 
         <!-- Responsive Settings Options -->

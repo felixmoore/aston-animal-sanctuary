@@ -5,10 +5,6 @@
         <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
                 <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-
-                  
-
-
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
@@ -28,7 +24,7 @@
                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     @sortablelink('colour', 'Colour')
                                 </th>
-                                @if (Auth::user() != null && Auth::user()->type == 'Staff')
+                                @if (Auth::user() != null && Auth::user()->type == 1)
                                     <th scope="col"
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Owner
@@ -51,12 +47,13 @@
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center">
                                             <div class="flex-shrink-0 h-10 w-10">
-                                                @if ($animal->image == "noimage.jpg")
+                                                
+                                                @if ($animal->image == 0)
                                                     <img class="h-10 w-10 rounded-full"
                                                     src="{{ asset('storage/images/placeholder.png') }}" alt="">
-                                                @else
+                                                @elseif ($animal->image == 1)
                                                     <img class="h-10 w-10 rounded-full"
-                                                    src="{{ asset('storage/images/' . $animal->image) }}" alt="">
+                                                    src="{{ asset('storage/images/' . $images->where('animal_id', $animal->id)->first()->image_location ) }}" alt="">
                                                 @endif
                                             </div>
                                             <div class="ml-4">
@@ -82,7 +79,7 @@
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         {{ $animal->colour }}
                                     </td>
-                                    @if (Auth::user() != null && Auth::user()->type == 'Staff')
+                                    @if (Auth::user() != null && Auth::user()->type == 1)
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                             @if ($animal->owner_id == null)
                                                 No owner
@@ -107,7 +104,7 @@
                                                 class="text-indigo-600 hover:text-indigo-900">Details</a>
                                         </div>
 
-                                        @if (Auth::user() != null && Auth::user()->type == 'Staff')
+                                        @if (Auth::user() != null && Auth::user()->type == 1)
                                             <div><a href="{{ route('animals.edit', ['animal' => $animal->id]) }}"
                                                     class="btn btnwarning text-indigo-600 hover:text-indigo-900">Edit</a>
                                             </div>
@@ -128,7 +125,9 @@
                             @endforeach
                         </tbody>
                     </table>
-                    {{ $animals->appends(\Request::except('page'))->render() }}
+                    @if ($animals->appends(\Request::except('page')))
+                        {{ $animals->appends(\Request::except('page'))->render() }}
+                    @endif
                 </div>
             </div>
         </div>
