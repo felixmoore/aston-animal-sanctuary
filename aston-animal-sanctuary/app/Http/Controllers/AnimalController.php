@@ -267,11 +267,14 @@ class AnimalController extends Controller
      */
     public function destroy($id)
     {
-
+        // find & delete images corresponding to animal (to avoid foreign key constraint violation)
         $images = Image::where('animal_id', $id);
         $images->delete();
+
+        // find & delete animal
         $animal = Animal::find($id);
         $animal->delete();
+        
         return redirect('animals');
     }
 }
