@@ -16,7 +16,7 @@ use App\Http\Controllers\RequestController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('new');
 });
 
 Route::get('/home', function () {

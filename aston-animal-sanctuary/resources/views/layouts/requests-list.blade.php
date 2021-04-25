@@ -1,4 +1,5 @@
 <section>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <div class="flex flex-col">
         <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
@@ -8,33 +9,37 @@
                             <tr>
                                 <th scope="col"
                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Request ID
+                                    @sortablelink('id', 'Request ID')
                                 </th>
                                 <th scope="col"
                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Date/Time Request Created
+                                    @sortablelink('created_at', 'Request Created')
                                 </th>
                                 <th scope="col"
                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Animal ID
+                                    @sortablelink('updated_at', 'Request Updated')
                                 </th>
                                 <th scope="col"
                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Animal Name
+                                    @sortablelink('animal_id', 'Animal ID')
+                                </th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    @sortablelink('animal_name', 'Animal Name')
                                 </th>
                                 @if (Auth::user() != null && Auth::user()->type == 'Staff')
                                     <th scope="col"
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        User ID
+                                        @sortablelink('user_id', 'User ID')
                                     </th>
                                     <th scope="col"
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        User Name
+                                        @sortablelink('user_name', 'User Name')
                                     </th>
                                 @endif
                                 <th scope="col"
                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Status</th>
+                                    @sortablelink('status', 'Status')</th>
                                 <th scope="col"
                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Action
@@ -54,6 +59,9 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         {{ date('d/m/Y H:i', strtotime($request->created_at)) }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {{ date('d/m/Y H:i', strtotime($request->updated_at)) }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         {{ $request->animal_id }}
@@ -116,6 +124,7 @@
                             @endforeach
                         </tbody>
                     </table>
+                    {{ $requests->appends(\Request::except('page'))->render() }}
                 </div>
             </div>
         </div>

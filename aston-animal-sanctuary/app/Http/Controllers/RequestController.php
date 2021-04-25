@@ -18,11 +18,12 @@ class RequestController extends Controller
      */
     public function index()
     {
+
         $users = DB::table('users')->get(); //todo replace uses of db with app/models
         $animals = DB::table('animals')->get();
-        $requests = AdoptionRequest::all();
+        $requests = AdoptionRequest::sortable()->paginate(5);
         $id = Auth::id();
-        $user_requests = AdoptionRequest::all()->where('user_id', $id);
+        $user_requests = AdoptionRequest::sortable()->paginate(5)->where('user_id', $id);
 
         return view('requests.index', compact('requests', 'animals', 'users', 'user_requests'));
     }

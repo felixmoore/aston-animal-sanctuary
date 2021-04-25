@@ -15,8 +15,6 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    
-                        
                     <x-nav-link :href="url('animals')">
                         {{ __('Animals') }}
                     </x-nav-link>
@@ -113,6 +111,17 @@
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="url('animals')">
+                {{ __('Animals') }}
+            </x-responsive-nav-link>
+            @if (Auth::user() != NULL && Auth::user()->type == 'Staff' )
+            <x-responsive-nav-link :href="url('animals/create')">
+                {{ __('Create') }}
+            </x-responsive-nav-link>
+            @endif
+            <x-responsive-nav-link :href="url('requests')">
+                {{ __('Requests') }}
             </x-responsive-nav-link>
         </div>
 
