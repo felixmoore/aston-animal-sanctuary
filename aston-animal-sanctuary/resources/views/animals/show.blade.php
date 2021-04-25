@@ -1,6 +1,12 @@
 @extends('layouts.app')
 @section('content')
     <div class="container">
+         <!-- display request success status -->
+ @if (\Session::has('success'))
+ <div class="alert alert-success">
+     <p>{{ \Session::get('success') }}</p>
+ </div><br />
+@endif
         <div class="row justify-content-center">
             <div class="col-md-8 ">
                 <div class="card">
@@ -53,19 +59,22 @@
                             <tr>
                                 <td><a href="{{ route('animals.index') }}" class="btn btn-primary" role="button">Back to the
                                         list</a></td>
-                                        @if ($animal['owner_id'] == null)
-                                <td><a href="{{ route('requests.create') }}" class="btn btn-primary" role="button">Adopt this animal</a></td>
+                                
+                                {{-- Check that animal is unowned before allowing a new adoption request--}}
+                                @if ($animal['owner_id'] == null) 
+                                    <td><a href="{{ route('requests.adopt',  ['id' => $animal['id']]) }}"
+                                        class="btn btnwarning">Adopt this animal</a></td>
                                 @endif
                                 @if (Auth::user() != NULL && Auth::user()->type == 'Staff' )
-                                <td><a href="{{ route('animals.edit', ['animal' => $animal['id']]) }}"
-                                        class="btn btnwarning">Edit</a></td>
-                                <td>
-                                    <form action="{{ route('animals.destroy', ['animal' => $animal['id']]) }}"
-                                        method="post"> @csrf
-                                        <input name="_method" type="hidden" value="DELETE">
-                                        <button class="btn btn-danger" type="submit">Delete</button>
-                                    </form>
-                                </td>
+                                    <td><a href="{{ route('animals.edit', ['animal' => $animal['id']]) }}"
+                                            class="btn btnwarning">Edit</a></td>
+                                    <td>
+                                        <form action="{{ route('animals.destroy', ['animal' => $animal['id']]) }}"
+                                            method="post"> @csrf
+                                            <input name="_method" type="hidden" value="DELETE">
+                                            <button class="btn btn-danger" type="submit">Delete</button>
+                                        </form>
+                                    </td>
                                 @endif
                             </tr>
                         </table>

@@ -1,13 +1,17 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Kyslik\ColumnSortable\Sortable;
 use App\Models\Animal;
+use App\Models\User;
 use Illuminate\Http\Request;
 use DB;
+use Validator;
 
 class AnimalController extends Controller
 {
+    use Sortable;
+    
     /**
      * Display a listing of the resource.
      *
@@ -18,7 +22,13 @@ class AnimalController extends Controller
         // $animals = Animal::sortable()->paginate(5);
         // return view('animals',compact('animals'));
         $users = DB::table('users')->get();
-        $animals = Animal::all();
+        
+    
+        $animals = Animal::sortable()->paginate(5);
+        $user = auth()->user();
+        if ($user['type'] == 'Public' || $user['type'] == null){ //only unowned animals are displayed
+            $animals =  Animal::sortable()->paginate(5)->where('owner_id', null);
+        }
         return view('animals.index', compact('animals', 'users'));
     }
 
@@ -30,8 +40,9 @@ class AnimalController extends Controller
     public function create()
     {
         $users = DB::table('users')->get();
-
-        return view('animals.create', compact('users'));
+        $species = collect(['Cat', 'Dog', 'Small animal']);
+    
+        return view('animals.create', compact('users', 'species'));
     }
 
     /**
@@ -46,9 +57,10 @@ class AnimalController extends Controller
         // form validation
         $animal = $this->validate(request(), [
             'name' => 'required',
-            'age' => 'numeric',
+            'age' => 'numeric|required',
             'species' => 'required',
             'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:500',
+           
             //TODO foreign key for owner_id
             //TODO availability
         ]);
@@ -68,10 +80,28 @@ class AnimalController extends Controller
         $animal = new Animal;
         $animal->name = $request->input('name');
         $animal->species = $request->input('species');
-        $animal->breed = $request->input('breed');
-        $animal->colour = $request->input('colour');
+        if (!$request->input('breed') == null) {
+            $animal->breed = $request->input('breed');
+        } else {
+            $animal->breed = "Unknown";
+        }
+        if (!$request->input('colour') == null) {
+            $animal->colour = $request->input('colour');
+        } else {
+            $animal->colour = "Unknown";
+        }
         $animal->age = $request->input('age');
-        $animal->owner_id = $request->input('owner_id');
+        if (!$request->input('owner_id') == null) {
+            $animal->owner_id = $request->input('owner_id');
+        } else {
+            $animal->owner_id = null;
+        }
+        
+        if (!$request->has('available')) {
+            $animal->available = 0;
+        } else {
+            $animal->available = 1;
+        }
         // $animal->available = $request->input('available'); //needs check if owner id != null, available == false
         $animal->created_at = now();
         $animal->image = $fileNameToStore;
@@ -89,8 +119,10 @@ class AnimalController extends Controller
      */
     public function show($id)
     {
+
         $animal = Animal::find($id);
-        return view('animals.show', compact('animal'));
+        $users = User::all();
+        return view('animals.show', compact('animal', 'users'));
     }
 
     /**
@@ -103,7 +135,8 @@ class AnimalController extends Controller
     {
         $users = DB::table('users')->get();
         $animal = Animal::find($id);
-        return view('animals.edit', compact('animal', 'users'));
+        $species = collect(['Cat', 'Dog', 'Small animal']);
+        return view('animals.edit', compact('animal', 'users', 'species'));
     }
 
     /**
@@ -116,22 +149,50 @@ class AnimalController extends Controller
     public function update(Request $request, $id)
     {
         $animal = Animal::find($id);
-        $this->validate(request(), [
+        // $this->validate(request(), [
+        //     'name' => 'required',
+        //     'age' => 'numeric',
+        //     'species' => 'required',
+        //     'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:500',
+
+        //     //TODO availability
+        // ]);
+        $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'age' => 'numeric',
+            'age' => 'numeric|required',
             'species' => 'required',
             'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:500',
-            //TODO foreign key for owner_id
-            //TODO availability
+            'available' => 'boolean'
         ]);
-
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
         $animal->name = $request->input('name');
         $animal->species = $request->input('species');
-        $animal->breed = $request->input('breed');
-        $animal->colour = $request->input('colour');
+        if (!$request->input('breed') == null) {
+            $animal->breed = $request->input('breed');
+        } else {
+            $animal->breed = "Unknown";
+        }
+        if (!$request->input('colour') == null) {
+            $animal->colour = $request->input('colour');
+        } else {
+            $animal->colour = "Unknown";
+        }
         $animal->age = $request->input('age');
-        $animal->owner_id = $request->input('owner_id');
-        $animal->updated_at = now();
+        if (!$request->input('owner_id') == null) {
+            $animal->owner_id = $request->input('owner_id');
+        } else {
+            $animal->owner_id = null;
+        }
+    
+
+        if (!$request->has('available')) {
+            $animal->available = 0;
+        } else {
+            $animal->available = 1;
+        }
+        
 
         if ($request->hasFile('image')) {
             $fileNameWithExt = $request->file('image')->getClientOriginalName();
@@ -139,10 +200,11 @@ class AnimalController extends Controller
             $extension = $request->file('image')->getClientOriginalExtension();
             $fileNameToStore = $filename . '_' . time() . '.' . $extension;
             $path = $request->file('image')->storeAs('public/images', $fileNameToStore);
-        } else {
-            $fileNameToStore = 'noimage.jpg';
+            $animal->image = $fileNameToStore;
         }
-        $animal->image = $fileNameToStore;
+
+
+        $animal->updated_at = now();
         $animal->save();
         return redirect('animals');
     }

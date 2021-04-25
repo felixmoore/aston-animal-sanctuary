@@ -20,6 +20,6 @@
       </div>
   </div>
 
-  @include('layouts.animal-list')
+  {{-- @include('layouts.animal-list') --}}
 @endsection
 

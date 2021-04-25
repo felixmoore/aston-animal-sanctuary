@@ -1,10 +1,13 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use App\Models\AdoptionRequest;
-use Illuminate\Http\Request;
+use App\Models\Animal;
 use DB;
+use Auth;
+use Route;
+use Illuminate\Http\Request;
+use Redirect;
 
 class RequestController extends Controller
 {
@@ -15,12 +18,13 @@ class RequestController extends Controller
      */
     public function index()
     {
-        // $animals = Animal::sortable()->paginate(5);
-        // return view('animals',compact('animals'));
-        $users = DB::table('users')->get();
+        $users = DB::table('users')->get(); //todo replace uses of db with app/models
         $animals = DB::table('animals')->get();
-        $requests = AdoptionRequest::all()->toArray();
-        return view('requests.index', compact('requests', 'animals', 'users'));
+        $requests = AdoptionRequest::all();
+        $id = Auth::id();
+        $user_requests = AdoptionRequest::all()->where('user_id', $id);
+
+        return view('requests.index', compact('requests', 'animals', 'users', 'user_requests'));
     }
 
     /**
@@ -31,8 +35,8 @@ class RequestController extends Controller
     public function create()
     {
         // $users = DB::table('users')->get();
-
-        // return view('animals.create', compact('users'));
+        // $animal = Animal::find($id);
+        return view('requests.create', compact('animal'));
     }
 
     /**
@@ -43,43 +47,23 @@ class RequestController extends Controller
      */
     public function store(Request $request)
     {
+        $adoption_request =  $this->validate(request(), [
+            'user_id' => 'numeric|required',
+            'animal_id' => 'numeric|required',
+        ]);
 
-        // // form validation
-        // $animal = $this->validate(request(), [
-        //     'name' => 'required',
-        //     'age' => 'numeric',
-        //     'species' => 'required',
-        //     'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:500',
-        //     //TODO foreign key for owner_id
-        //     //TODO availability
-        // ]);
+        //todo check if user has already made request for this animal and reject
 
-        // if ($request->hasFile('image')) {
-        //     // Strips relevant info from uploaded file
-        //     $fileNameWithExt = $request->file('image')->getClientOriginalName();
-        //     $filename = pathinfo($fileNameWithExt, PATHINFO_FILENAME);
-        //     $extension = $request->file('image')->getClientOriginalExtension();
-        //     $fileNameToStore = $filename . '_' . time() . '.' . $extension;
-        //     //Uploads the image
-        //     $path = $request->file('image')->storeAs('public/images', $fileNameToStore);
-        // } else {
-        //     $fileNameToStore = 'noimage.jpg';
-        // }
-        // // create a Animal object and set its values from the input
-        // $animal = new Animal;
-        // $animal->name = $request->input('name');
-        // $animal->species = $request->input('species');
-        // $animal->breed = $request->input('breed');
-        // $animal->colour = $request->input('colour');
-        // $animal->age = $request->input('age');
-        // $animal->owner_id = $request->input('owner_id');
-        // // $animal->available = $request->input('available'); //needs check if owner id != null, available == false
-        // $animal->created_at = now();
-        // $animal->image = $fileNameToStore;
-        // // save the Animal object
-        // $animal->save();
-        // // generate a redirect HTTP response with a success message
-        // return back()->with('success', 'Animal has been added');
+        $adoption_request = new AdoptionRequest;
+        $adoption_request->user_id = $request->user_id;
+
+        $adoption_request->animal_id = $request->animal_id;
+        $adoption_request->created_at = now();
+
+        $adoption_request->save();
+        // redirect back to animal details page with success message
+        $animal = Animal::find($request->animal_id);
+        return Redirect::route('animals.show', ['animal' => $animal ])->with('success', 'Request made successfully!');
     }
 
     /**
@@ -90,8 +74,7 @@ class RequestController extends Controller
      */
     public function show($id)
     {
-        // $animal = Animal::find($id);
-        // return view('animals.show', compact('animal'));
+        //
     }
 
     /**
@@ -102,9 +85,53 @@ class RequestController extends Controller
      */
     public function edit($id)
     {
-        // $users = DB::table('users')->get();
-        // $animal = Animal::find($id);
-        // return view('animals.edit', compact('animal', 'users'));
+        //
+    }
+
+     /**
+     * Approve adoption request.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function approve($id)
+    {
+        $adoption_request = AdoptionRequest::find($id);
+       
+        //deny all other adoption requests for the same animal
+        $animal = $adoption_request->animal_id;
+        foreach (AdoptionRequest::where('animal_id', $animal)->get() as $other_request) {
+            $other_request->status = 'Denied';
+            $other_request->save();
+        }
+        
+        //approve selected request
+        $adoption_request->status = 'Approved';
+        $adoption_request->save();
+
+
+        //update animal owner to match user who made approved adoption request
+        //mark animal as unavailable for adoption
+        $adopted_animal = Animal::find($animal);
+        $adopted_animal->owner_id = $adoption_request->user_id;
+        $adopted_animal->available = 0; 
+        $adopted_animal->save();
+
+        return redirect('requests');
+    }
+
+    /**
+     * Deny adoption request.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function deny($id)
+    {
+        $adoption_request = AdoptionRequest::find($id);
+        $adoption_request->status = 'Denied';
+        $adoption_request->save();
+        return redirect('requests');
     }
 
     /**
@@ -116,36 +143,7 @@ class RequestController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // $animal = Animal::find($id);
-        // $this->validate(request(), [
-        //     'name' => 'required',
-        //     'age' => 'numeric',
-        //     'species' => 'required',
-        //     'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:500',
-        //     //TODO foreign key for owner_id
-        //     //TODO availability
-        // ]);
-
-        // $animal->name = $request->input('name');
-        // $animal->species = $request->input('species');
-        // $animal->breed = $request->input('breed');
-        // $animal->colour = $request->input('colour');
-        // $animal->age = $request->input('age');
-        // $animal->owner_id = $request->input('owner_id');
-        // $animal->updated_at = now();
-
-        // if ($request->hasFile('image')) {
-        //     $fileNameWithExt = $request->file('image')->getClientOriginalName();
-        //     $filename = pathinfo($fileNameWithExt, PATHINFO_FILENAME);
-        //     $extension = $request->file('image')->getClientOriginalExtension();
-        //     $fileNameToStore = $filename . '_' . time() . '.' . $extension;
-        //     $path = $request->file('image')->storeAs('public/images', $fileNameToStore);
-        // } else {
-        //     $fileNameToStore = 'noimage.jpg';
-        // }
-        // $animal->image = $fileNameToStore;
-        // $animal->save();
-        // return redirect('animals');
+        //
     }
 
     /**
@@ -156,8 +154,14 @@ class RequestController extends Controller
      */
     public function destroy($id)
     {
-        // $animal = Animal::find($id);
-        // $animal->delete();
-        // return redirect('animals');
+        $adoption_request = AdoptionRequest::find($id);
+        $adoption_request->delete();
+        return redirect('requests');
+    }
+
+    public function adopt($id)
+    {
+        $animal = Animal::find($id);
+        return view('requests.create', compact('animal'));
     }
 }

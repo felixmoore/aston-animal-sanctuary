@@ -34,10 +34,11 @@ Route::get('/dashboard', function () {
     return view('dashboard', ['animals' => $animals]);
 })->middleware(['auth'])->name('dashboard');
 
-// Route::get('list', 'App\Http\Controllers\UserController@list');
-// Route::get('show/{id}', 'App\Http\Controllers\UserController@show');
 
 Route::resource('animals', AnimalController::class);
 Route::resource('requests', RequestController::class);
 
+Route::get('requests/approve/{id}', 'App\Http\Controllers\RequestController@approve')->name('requests.approve');
+Route::get('requests/deny/{id}', 'App\Http\Controllers\RequestController@deny')->name('requests.deny');
+Route::get('requests/adopt/{id}', 'App\Http\Controllers\RequestController@adopt')->name('requests.adopt');
 require __DIR__.'/auth.php';
