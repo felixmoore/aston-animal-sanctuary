@@ -53,9 +53,8 @@
 
         </div>
 
-
+        {{-- Adapted from template https://templates.digizu.co.uk/layouts/blocks.html --}}
     <div class="flex flex-wrap -mx-2">
-      
       <div class="w-1/2 p-2">
         <a href="{{ route('animals.index') }}" class="block mb-8 bg-black hover:bg-gray-700">
           <img src="img/alexis-chloe-dD75iU5UAU4-unsplash.jpg" class="w-full h-auto opacity-75" />
