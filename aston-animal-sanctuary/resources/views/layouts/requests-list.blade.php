@@ -4,6 +4,7 @@
         <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
                 <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+                    @if (Auth::user() != null)
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
@@ -27,7 +28,7 @@
                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     @sortablelink('animal_name', 'Animal Name')
                                 </th>
-                                @if (Auth::user() != null && Auth::user()->type == 'Staff')
+                                @if (Auth::user() != null && Auth::user()->type == 1)
                                     <th scope="col"
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         @sortablelink('user_id', 'User ID')
@@ -47,11 +48,8 @@
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
-                            @if (Auth::user() != null && Auth::user()->type == 'Public')
-                                @php
-                                    $requests = $user_requests
-                                @endphp
-                            @endif
+                            
+                               
                             @foreach ($requests as $request)
                                 <tr>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -73,7 +71,7 @@
                                             @endif
                                         @endforeach
                                     </td>
-                                    @if (Auth::user() != null && Auth::user()->type == 'Staff')
+                                    @if (Auth::user() != null && Auth::user()->type == 1)
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         {{ $request->user_id }}
                                     </td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -94,7 +92,7 @@
                                                 class="text-indigo-600 hover:text-indigo-900">Animal details</a>
                                         </div>
 
-                                        @if (Auth::user() != null && Auth::user()->type == 'Staff')
+                                        @if (Auth::user() != null && Auth::user()->type == 1)
                                             @if ($request['status'] == 'Pending'){{-- TODO --}}
                                                 <div>
                                                     <a href="{{route('requests.approve', $request->id)}}" class="btn btn-danger text-indigo-600 hover:text-indigo-900">Approve</a>
@@ -122,9 +120,15 @@
                                     </td>
                                 </tr>
                             @endforeach
+                            
                         </tbody>
                     </table>
-                    {{ $requests->appends(\Request::except('page'))->render() }}
+                        @if ($requests->appends(\Request::except('page')))
+                            {{ $requests->appends(\Request::except('page'))->render() }}
+                        @endif
+                    @else
+                    <h2 class="font-semibold text-xl text-gray-800 leading-tight">Please log in to view requests!</h2>
+                    @endif
                 </div>
             </div>
         </div>

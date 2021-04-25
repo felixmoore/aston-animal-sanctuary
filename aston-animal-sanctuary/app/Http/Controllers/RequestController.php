@@ -5,12 +5,18 @@ use App\Models\AdoptionRequest;
 use App\Models\Animal;
 use DB;
 use Auth;
+use Gate;
 use Route;
 use Illuminate\Http\Request;
 use Redirect;
 
 class RequestController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -21,11 +27,18 @@ class RequestController extends Controller
 
         $users = DB::table('users')->get(); //todo replace uses of db with app/models
         $animals = DB::table('animals')->get();
-        $requests = AdoptionRequest::sortable()->paginate(5);
-        $id = Auth::id();
-        $user_requests = AdoptionRequest::sortable()->paginate(5)->where('user_id', $id);
-
-        return view('requests.index', compact('requests', 'animals', 'users', 'user_requests'));
+      
+        $requests = AdoptionRequest::sortable()->paginate(10);
+        
+       
+            if(Auth::user()->type != 1){
+                $requests = AdoptionRequest::sortable()->paginate(10)->where('user_id', auth()->user()->id);
+            }
+        
+        return view('requests.index', compact('requests', 'animals', 'users'));
+        
+       
+        
     }
 
     /**
