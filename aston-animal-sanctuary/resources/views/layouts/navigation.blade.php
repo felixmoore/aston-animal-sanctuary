@@ -12,9 +12,9 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    {{-- <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link> --}}
+                    <x-nav-link :href="url('home')">
+                        {{ __('Home') }}
+                    </x-nav-link>
                     <x-nav-link :href="url('animals')">
                         {{ __('Animals') }}
                     </x-nav-link>
@@ -40,13 +40,9 @@
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
-                            {{-- @if (Auth::user() != NULL)
-                            <div>{{ Auth::user()->name }}</div> 
-                            {{-- TODO needs login check --}}
-                                
-                            {{--@else --}}
+                            
                             @if (Route::has('login'))
-                            {{-- <div class="ml-4 flex items-center md:ml-6"> --}}
+                       
                                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                                 @auth
                                      <div>{{ Auth::user()->name }}</div> 
@@ -110,9 +106,9 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            {{-- <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
-            </x-responsive-nav-link> --}}
+            <x-responsive-nav-link :href="url('home')">
+                {{ __('Home') }}
+            </x-responsive-nav-link>
             <x-responsive-nav-link :href="url('animals')">
                 {{ __('Animals') }}
             </x-responsive-nav-link>

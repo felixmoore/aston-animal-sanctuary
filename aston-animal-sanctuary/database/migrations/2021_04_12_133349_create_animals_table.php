@@ -21,6 +21,7 @@ class CreateAnimalsTable extends Migration
             $table->string('breed');
             $table->string('colour');
             $table->integer('age');
+            $table->string('sex');
             $table->foreignId('owner_id')->constrained('users')->nullable();
             $table->boolean('available')->default(TRUE);
             $table->string('image')->nullable();
@@ -28,6 +29,7 @@ class CreateAnimalsTable extends Migration
         });
 
         DB::statement('ALTER TABLE animals ADD CONSTRAINT check_animal_species CHECK (species IN (\'Dog\', \'Cat\', \'Small animal\'))');
+        DB::statement('ALTER TABLE animals ADD CONSTRAINT check_animal_sex CHECK (sex IN (\'Male\', \'Female\'))');
     }
 
     /**

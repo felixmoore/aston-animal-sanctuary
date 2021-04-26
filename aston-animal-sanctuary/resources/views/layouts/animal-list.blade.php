@@ -22,6 +22,10 @@
                                 </th>
                                 <th scope="col"
                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Sex
+                                </th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     @sortablelink('colour', 'Colour')
                                 </th>
                                 @if (Auth::user() != null && Auth::user()->type == 1)
@@ -31,7 +35,7 @@
                                     </th>
                                     <th scope="col"
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Status
+                                        @sortablelink('available', 'Status')
                                     </th>
                                 @endif
                                 <th scope="col"
@@ -46,21 +50,21 @@
 
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center">
-                                            <div class="flex-shrink-0 h-10 w-10">
+                                            <div class="flex-shrink-0 h-40 w-40">
                                                 
                                                 @if ($animal->image == 0)
-                                                    <img class="h-10 w-10 rounded-full"
+                                                    <img class="h-20 w-20 rounded-full"
                                                     src="{{ asset('storage/images/placeholder.png') }}" alt="">
                                                 @elseif ($animal->image == 1)
-                                                    <img class="h-10 w-10 rounded-full"
+                                                    <img class="object-cover h-40 w-full rounded-full"
                                                     src="{{ asset('storage/images/' . $images->where('animal_id', $animal->id)->first()->image_location ) }}" alt="">
                                                 @endif
                                             </div>
                                             <div class="ml-4">
-                                                <div class="text-sm font-medium text-gray-900">
+                                                <div class="text-lg font-medium text-gray-900">
                                                     {{ $animal->name }}
                                                 </div>
-                                                <div class="text-sm text-gray-500">
+                                                <div class="text-md text-gray-500">
                                                     {{ $animal->species }}
                                                 </div>
                                             </div>
@@ -68,19 +72,22 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
 
-                                        <div class="text-sm text-gray-900">{{ $animal->breed }}</div>
+                                        <div class="text-md text-gray-900">{{ $animal->breed }}</div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <span
-                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                            class="px-2 inline-flex text-md leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                                             {{ $animal->age }}
                                         </span>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td class="px-6 py-4 whitespace-nowrap text-md text-gray-500">
+                                        {{ $animal->sex }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-md text-gray-500">
                                         {{ $animal->colour }}
                                     </td>
                                     @if (Auth::user() != null && Auth::user()->type == 1)
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <td class="px-6 py-4 whitespace-nowrap text-md text-gray-500">
                                             @if ($animal->owner_id == null)
                                                 No owner
                                             @else
@@ -91,7 +98,7 @@
                                                 @endforeach
                                             @endif
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <td class="px-6 py-4 whitespace-nowrap text-md text-gray-500">
                                             @if ($animal->available)
                                                 Available for adoption
                                             @else

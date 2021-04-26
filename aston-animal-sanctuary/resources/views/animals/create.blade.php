@@ -1,5 +1,4 @@
 @extends('layouts.app')
-{{-- TODO needs check for user type = admin --}}
 
 @section('header')
     <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -24,12 +23,12 @@
             <p>{{ \Session::get('success') }}</p>
         @endcomponent
     @endif
-<!-- define the form -->
 
+    <!-- define the form -->
     <form class="form-horizontal" method="POST" action="{{ url('animals') }}"
         enctype="multipart/form-data">
         @csrf
-{{-- Adapted from https://tailwindcomponents.com/component/form-create --}}
+    {{-- Adapted from https://tailwindcomponents.com/component/form-create --}}
     <div class="relative py-3 sm:max-w-xl sm:mx-auto">
         <div class="relative px-4 py-10 bg-white mx-8 md:mx-0 shadow rounded-3xl sm:p-10">
             <div class="max-w-md mx-auto">
@@ -64,15 +63,22 @@
                                     name="breed" value="{{ old('breed') ? old('breed') : '' }}" placeholder="Breed" />
                             </div>
                         </div>
-                        <div class="flex flex-col">
-                            <label class="leading-loose">Age</label>
-                            <input type="number"
-                                class="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
-                                name="age" value="{{ old('age') ? old('age') : '' }}" placeholder="Age" />
+                        <div class="flex items-center space-x-4">
+                            <div class="flex flex-col w-1/2">
+                                <label class="leading-loose">Age</label>
+                                <input type="number"
+                                    class="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
+                                    name="age" value="{{ old('age') ? old('age') : '' }}" placeholder="Age" />
+                            </div>
+                            <div class="flex flex-col w-1/2">
+                                <label class="leading-loose">Sex</label>
+                                <select name="sex"
+                                    class="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600">
+                                        <option value="Female">Female</option>
+                                        <option value="Male">Male</option>
+                                </select>
+                            </div>
                         </div>
-
-
-
                         <div class="flex flex-col">
                             <label class="leading-loose">Colour</label>
                             <input type="text"

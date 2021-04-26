@@ -18,9 +18,9 @@
         </div><br />
     @endif
     @if (\Session::has('success'))
-        <div class="alert alert-success">
+        @component('components.alerts.success')
             <p>{{ \Session::get('success') }}</p>
-        </div><br />
+        @endcomponent
     @endif
     {{-- Adapted from https://tailwindcomponents.com/component/form-create --}}
     <div class="relative py-3 sm:max-w-xl sm:mx-auto">
@@ -65,14 +65,26 @@
                                         placeholder="Breed" />
                                 </div>
                             </div>
-                            <div class="flex flex-col">
-                                <label class="leading-loose">Age</label>
-                                <input type="number"
+                            
+                            <div class="flex items-center space-x-4">
+                                <div class="flex flex-col w-1/2">
+                                    <label class="leading-loose">Age</label>
+                                    <input type="number"
                                     class="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
                                     name="age" value="{{ old('age') ? old('age') : $animal->age  }}"
                                     placeholder="Age" />
-                            </div>
+                                </div>
 
+                                <div class="flex flex-col w-1/2">
+                                    <label class="leading-loose">Sex</label>
+                                    <select name="sex"
+                                        class="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600">
+                                        <option value="Female" @if($animal->sex == "Female") selected @endif>Female</option>
+                                        <option value="Male" @if($animal->sex == "Male") selected @endif>Male</option>
+                                    </select>
+                                </div>
+                                
+                            </div>
 
 
                             <div class="flex flex-col">

@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 use App\Models\AdoptionRequest;
 use App\Models\Animal;
+use App\Models\User;
+use Kyslik\ColumnSortable\Sortable;
+use App\Models\Image;
 use DB;
 use Auth;
 use Gate;
@@ -26,17 +29,16 @@ class RequestController extends Controller
     public function index()
     {
 
-        $users = DB::table('users')->get(); //todo replace uses of db with app/models
-        $animals = DB::table('animals')->get();
-      
+        $users = User::all(); 
+        $animals = Animal::all();
+        $images = Image::all();
         $requests = AdoptionRequest::sortable()->paginate(10);
         
-       
             if(Auth::user()->type != 1){
-                $requests = AdoptionRequest::sortable()->paginate(10)->where('user_id', auth()->user()->id);
+                $requests = AdoptionRequest::sortable()->where('user_id', auth()->user()->id)->paginate(10);
             }
         
-        return view('requests.index', compact('requests', 'animals', 'users'));
+        return view('requests.index', compact('requests', 'animals', 'users', 'images'));
         
        
         
@@ -49,9 +51,8 @@ class RequestController extends Controller
      */
     public function create()
     {
-        // $users = DB::table('users')->get();
-        // $animal = Animal::find($id);
-        return view('requests.create', compact('animal'));
+        $images = Image::all();
+        return view('requests.create', compact('animal', 'images'));
     }
 
     /**
@@ -70,7 +71,7 @@ class RequestController extends Controller
 
         if (AdoptionRequest::where('user_id', $request->user_id)
                            ->where('animal_id', $request->animal_id)
-                           ->where('status', 'Pending') != null){
+                           ->where('status', 'Pending')->first() != null){
                             throw ValidationException::withMessages(['user_id' => 'You already have a pending application for this animal.']);
         } else {
            
@@ -84,7 +85,8 @@ class RequestController extends Controller
             $adoption_request->save();
             // redirect back to animal details page with success message
             $animal = Animal::find($request->animal_id);
-            return Redirect::route('animals.show', ['animal' => $animal ])->with('success', 'Request made successfully!');
+            $images = Image::all();
+            return Redirect::route('animals.show', ['animal' => $animal, 'images' => $images])->with('success', 'Request made successfully!');
         }
     }
 
@@ -184,6 +186,7 @@ class RequestController extends Controller
     public function adopt($id)
     {
         $animal = Animal::find($id);
-        return view('requests.create', compact('animal'));
+        $images = Image::all();
+        return view('requests.create', compact('animal', 'images'));
     }
 }

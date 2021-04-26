@@ -11,7 +11,9 @@ class Animal extends Model
 {
     use HasFactory, Sortable;
 
-    protected $fillable = [ 'name', 'species','age', 'breed', 'colour', 'image' ];
+    protected $fillable = [ 'name', 'species','age', 'sex', 'breed', 'colour', 'image' ];
 
-	public $sortable = ['id', 'name', 'species','age', 'breed', 'colour', 'created_at', 'updated_at'];
+	public $sortable = ['id', 'name', 'species','age', 'breed', 'colour', 'available', 'created_at', 'updated_at'];
+
+    
 }

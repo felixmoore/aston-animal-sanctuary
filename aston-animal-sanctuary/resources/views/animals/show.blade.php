@@ -9,9 +9,9 @@
    
     <!-- display request success status -->
     @if (\Session::has('success'))
-        <div class="alert alert-success">
-            <h1 class="block  font-semibold text-xl self-start text-gray-700">{{ \Session::get('success') }}</h1>
-        </div><br />
+        @component('components.alerts.success')
+            <p>{{ \Session::get('success') }}</p>
+        @endcomponent
     @endif
 
     @if ($animal == null)
@@ -145,37 +145,41 @@
 
                             <div class="flex items-center space-x-4">
                                 <div class="flex flex-col w-1/2">
+                                    <label class="font-bold leading-loose">Sex</label>
+                                    {{ $animal->sex }}
+                                </div>
+                                <div class="flex flex-col w-1/2">
                                     <label class="font-bold leading-loose">Colour</label>
                                     {{ $animal->colour }}
                                 </div>
-                                @if (Auth::user() != null && Auth::user()->type == 1)
-                                    <div class="flex flex-col w-1/2">
-                                        <label class="font-bold leading-loose">Owner</label>
-                                        @if ($animal['owner_id'] == null)
-                                            No owner
-                                        @else
-
-                                            @foreach ($users as $user)
-
-                                                @if ($user->id == $animal['owner_id'])
-                                                    {{ $user->name }}
-                                                @endif
-                                            @endforeach
-                                        @endif
-                                        </td>
-                                    </div>
-                                @endif
-
+                               
                             </div>
+
+                            @if (Auth::user() != null && Auth::user()->type == 1)
+                            <div class="flex flex-col w-full">
+                                <label class="font-bold leading-loose">Owner</label>
+                                @if ($animal['owner_id'] == null)
+                                    No owner
+                                @else
+
+                                    @foreach ($users as $user)
+
+                                        @if ($user->id == $animal['owner_id'])
+                                            {{ $user->name }}
+                                        @endif
+                                    @endforeach
+                                @endif
+                                </td>
+                            </div>
+                        @endif
+
                         </div>
 
 
                         <table class="table-auto">
                             <td><a href="{{ route('animals.index') }}"
                                     class=" w-1/3 text-gray-900 px-4 py-3 rounded-md focus:outline-none"
-                                    role="button">Back
-                                    to the
-                                    list</a></td>
+                                    role="button">Back to the list</a></td>
 
                             {{-- Check that animal is unowned before allowing a new adoption request --}}
                             @if ($animal['owner_id'] == null)

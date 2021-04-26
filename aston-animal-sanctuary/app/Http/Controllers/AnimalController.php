@@ -27,7 +27,7 @@ class AnimalController extends Controller
      */
     public function index()
     {
-        $users = DB::table('users')->get();
+        $users = User::all(); ;
         $images = Image::all();
         $animals = Animal::sortable();
         if(Auth::user() == NULL || Auth::user()->type != 1){
@@ -44,7 +44,7 @@ class AnimalController extends Controller
      */
     public function filter($species)
     {
-        $users = DB::table('users')->get();
+        $users = User::all(); 
         $images = Image::all();
         $animals = Animal::sortable()->where('species', $species);
         if(Auth::user() == NULL || Auth::user()->type != 1){
@@ -63,10 +63,14 @@ class AnimalController extends Controller
      */
     public function create()
     {
-        $users = DB::table('users')->get();
-        $species = collect(['Cat', 'Dog', 'Small animal']);
+        if(Auth::user()->type == 1){
+            $users = User::all(); 
+            $species = collect(['Cat', 'Dog', 'Small animal']);
 
-        return view('animals.create', compact('users', 'species'));
+            return view('animals.create', compact('users', 'species'));
+        } else {
+            abort(404);
+        }
     }
 
     /**
@@ -82,6 +86,7 @@ class AnimalController extends Controller
         $animal = $this->validate(request(), [
             'name' => 'required',
             'age' => 'numeric|required',
+            'sex' => 'required',
             'species' => 'required',
             'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:500',
         ]);
@@ -101,18 +106,19 @@ class AnimalController extends Controller
             $animal->colour = "Unknown";
         }
         $animal->age = $request->input('age');
+        $animal->sex = $request->input('sex');
         if (!$request->input('owner_id') == null) {
             $animal->owner_id = $request->input('owner_id');
         } else {
             $animal->owner_id = null;
         }
 
-        if (!$request->has('available')) {
+        if (!$request->has('available') || $animal->owner_id != null) {
             $animal->available = 0;
         } else {
             $animal->available = 1;
         }
-        //TODO needs check if owner id != null, available == false
+       
         $animal->created_at = now();
 
 
@@ -170,10 +176,15 @@ class AnimalController extends Controller
      */
     public function edit($id)
     {
-        $users = DB::table('users')->get();
-        $animal = Animal::find($id);
-        $species = collect(['Cat', 'Dog', 'Small animal']);
-        return view('animals.edit', compact('animal', 'users', 'species'));
+        
+        if(Auth::user()->type == 1){
+            $users = User::all(); 
+            $animal = Animal::find($id);
+            $species = collect(['Cat', 'Dog', 'Small animal']);
+            return view('animals.edit', compact('animal', 'users', 'species'));
+        } else {
+            abort(404);
+        }
     }
 
     /**
@@ -186,18 +197,12 @@ class AnimalController extends Controller
     public function update(Request $request, $id)
     {
         $animal = Animal::find($id);
-        // $this->validate(request(), [
-        //     'name' => 'required',
-        //     'age' => 'numeric',
-        //     'species' => 'required',
-        //     'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:500',
-
-        //     //TODO availability
-        // ]);
+     
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'age' => 'numeric|required',
             'species' => 'required',
+            'sex' => 'required',
             'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:500',
             'available' => 'boolean'
         ]);
@@ -217,6 +222,7 @@ class AnimalController extends Controller
             $animal->colour = "Unknown";
         }
         $animal->age = $request->input('age');
+        $animal->sex = $request->input('sex');
         if (!$request->input('owner_id') == null) {
             $animal->owner_id = $request->input('owner_id');
 
@@ -241,9 +247,9 @@ class AnimalController extends Controller
         $animal->updated_at = now();
 
 
-        $images = $request->file('images');
+        
         if ($request->hasfile('images')) {
-
+            $images = $request->file('images');
             $animal->image = true;
             $animal->save();
             foreach ($images as $image) {
@@ -262,7 +268,7 @@ class AnimalController extends Controller
                 ]);
             }
         } else {
-            $animal->image = false;
+        
             $animal->save();
         }
         return redirect('animals');

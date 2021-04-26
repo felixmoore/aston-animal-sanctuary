@@ -1,4 +1,4 @@
-{{-- TODO check user is logged in !!! --}}
+
 
 @extends('layouts.app')
 @section('header')
