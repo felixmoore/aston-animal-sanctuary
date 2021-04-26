@@ -6,6 +6,7 @@ use Kyslik\ColumnSortable\Sortable;
 use App\Models\Animal;
 use App\Models\User;
 use App\Models\Image;
+use App\Models\AdoptionRequest;
 use Illuminate\Http\Request;
 use DB;
 use Auth;
@@ -218,6 +219,14 @@ class AnimalController extends Controller
         $animal->age = $request->input('age');
         if (!$request->input('owner_id') == null) {
             $animal->owner_id = $request->input('owner_id');
+
+            // find & deny adoption requests corresponding to animal
+            $adoption_requests = AdoptionRequest::select('*')->where('animal_id', $id)->where('status', 'Pending');
+            foreach ($adoption_requests as $individual){
+                $individual->status  = 'Denied';
+                $individual->save();
+            }
+
         } else {
             $animal->owner_id = null;
         }
@@ -267,14 +276,16 @@ class AnimalController extends Controller
      */
     public function destroy($id)
     {
-        // find & delete images corresponding to animal (to avoid foreign key constraint violation)
+        // find & delete images & adoption requests corresponding to animal (to avoid foreign key constraint violation)
         $images = Image::where('animal_id', $id);
         $images->delete();
+        $requests = AdoptionRequest::where('animal_id', $id);
+        $requests->delete();
 
         // find & delete animal
         $animal = Animal::find($id);
         $animal->delete();
-        
+
         return redirect('animals');
     }
 }

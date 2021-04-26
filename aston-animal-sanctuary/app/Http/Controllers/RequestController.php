@@ -9,6 +9,7 @@ use Gate;
 use Route;
 use Illuminate\Http\Request;
 use Redirect;
+use Illuminate\Validation\ValidationException;
 
 class RequestController extends Controller
 {
@@ -66,18 +67,25 @@ class RequestController extends Controller
             'animal_id' => 'numeric|required',
         ]);
 
-        //todo check if user has already made request for this animal and reject
 
-        $adoption_request = new AdoptionRequest;
-        $adoption_request->user_id = $request->user_id;
+        if (AdoptionRequest::where('user_id', $request->user_id)
+                           ->where('animal_id', $request->animal_id)
+                           ->where('status', 'Pending') != null){
+                            throw ValidationException::withMessages(['user_id' => 'You already have a pending application for this animal.']);
+        } else {
+           
 
-        $adoption_request->animal_id = $request->animal_id;
-        $adoption_request->created_at = now();
+            $adoption_request = new AdoptionRequest;
+            $adoption_request->user_id = $request->user_id;
 
-        $adoption_request->save();
-        // redirect back to animal details page with success message
-        $animal = Animal::find($request->animal_id);
-        return Redirect::route('animals.show', ['animal' => $animal ])->with('success', 'Request made successfully!');
+            $adoption_request->animal_id = $request->animal_id;
+            $adoption_request->created_at = now();
+
+            $adoption_request->save();
+            // redirect back to animal details page with success message
+            $animal = Animal::find($request->animal_id);
+            return Redirect::route('animals.show', ['animal' => $animal ])->with('success', 'Request made successfully!');
+        }
     }
 
     /**
