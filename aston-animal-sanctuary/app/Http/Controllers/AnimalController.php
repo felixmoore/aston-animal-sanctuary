@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use DB;
 use Auth;
 use Gate;
+use Redirect;
 use Validator;
 
 class AnimalController extends Controller
@@ -271,7 +272,8 @@ class AnimalController extends Controller
         
             $animal->save();
         }
-        return redirect('animals');
+        $images = Image::all();
+        return Redirect::route('animals.show', ['animal' => $animal, 'images' => $images])->with('success', 'Edit made successfully!');
     }
 
     /**

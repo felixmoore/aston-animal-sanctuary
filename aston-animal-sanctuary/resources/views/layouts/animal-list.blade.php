@@ -53,7 +53,7 @@
                                             <div class="flex-shrink-0 h-40 w-40">
                                                 
                                                 @if ($animal->image == 0)
-                                                    <img class="h-20 w-20 rounded-full"
+                                                    <img class="object-cover h-40 w-full rounded-full"
                                                     src="{{ asset('storage/images/placeholder.png') }}" alt="">
                                                 @elseif ($animal->image == 1)
                                                     <img class="object-cover h-40 w-full rounded-full"
