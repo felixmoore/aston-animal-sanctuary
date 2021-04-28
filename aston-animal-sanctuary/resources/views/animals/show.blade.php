@@ -184,8 +184,9 @@
                             {{-- Check that animal is unowned before allowing a new adoption request --}}
                             @if ($animal['owner_id'] == null)
                                 <td><a href="{{ route('requests.adopt', ['id' => $animal['id']]) }}"
-                                        class="  w-1/3 text-gray-900 px-4 py-3 rounded-md focus:outline-none">Adopt this
+                                    class="flex btn-primary bg-blue-500 w-1/3 text-white px-4 py-3 rounded-md focus:outline-none" >Adopt this
                                         animal</a></td>
+
                             @endif
                             @if (Auth::user() != null && Auth::user()->type == 1)
                                 <td> <a href="{{ route('animals.edit', ['animal' => $animal['id']]) }}"

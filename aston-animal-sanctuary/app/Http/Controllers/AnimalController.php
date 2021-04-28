@@ -32,7 +32,7 @@ class AnimalController extends Controller
         $images = Image::all();
         $animals = Animal::sortable();
         if(Auth::user() == NULL || Auth::user()->type != 1){
-            $animals =  $animals->where('owner_id', null);
+            $animals =  $animals->where('available', 1);
         }
         $animals = $animals->paginate(10);
         return view('animals.index', compact('animals', 'users', 'images'));
@@ -49,7 +49,7 @@ class AnimalController extends Controller
         $images = Image::all();
         $animals = Animal::sortable()->where('species', $species);
         if(Auth::user() == NULL || Auth::user()->type != 1){
-            $animals =  $animals->where('owner_id', null);
+            $animals =  $animals->where('available', 1);
         }
         $animals = $animals->paginate(10);
        
