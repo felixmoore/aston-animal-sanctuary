@@ -28,7 +28,7 @@
     <form class="form-horizontal" method="POST" action="{{ url('animals') }}"
         enctype="multipart/form-data">
         @csrf
-    {{-- Adapted from https://tailwindcomponents.com/component/form-create --}}
+    {{-- form design adapted from https://tailwindcomponents.com/component/form-create --}}
     <div class="relative py-3 sm:max-w-xl sm:mx-auto">
         <div class="relative px-4 py-10 bg-white mx-8 md:mx-0 shadow rounded-3xl sm:p-10">
             <div class="max-w-md mx-auto">
@@ -43,7 +43,8 @@
                             <label class="leading-loose">Animal name</label>
                             <input type="text"
                                 class="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
-                                name="name" value="{{ old('name') ? old('name') : '' }}" placeholder="Name" />
+                                name="name" value="{{ old('name') ? old('name') : '' }}" placeholder="Name" /> 
+                                {{-- old() preserves entered data on refresh/validation error --}}
                         </div>
 
                         <div class="flex items-center space-x-4">
@@ -51,6 +52,7 @@
                                 <label class="leading-loose">Animal species</label>
                                 <select name="species"
                                     class="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600">
+                                    {{-- species options provided in AnimalController - makes it easier to add more types in future  --}}
                                     @foreach ($species as $selected)
                                         <option value="{{ $selected }}">{{ $selected }}</option>
                                     @endforeach
@@ -87,7 +89,7 @@
                         </div>
                        
                         <div class="flex flex-col">
-                            <label class="leading-loose">Image</label>
+                            <label class="leading-loose">Images</label>
 
                             <input type="file" name="images[]" multiple class="form-control px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600" accept="image/*">
                             @if ($errors->has('files'))
@@ -97,9 +99,6 @@
                               </span>
                               @endforeach
                             @endif
-                            {{-- <input type="file"
-                                class="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
-                                name="image" placeholder="Image file" /> --}}
                         </div>
 
                         <div class="flex flex-col ">
@@ -107,6 +106,7 @@
                             <select name="owner_id"
                                 class="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600">
                                 <option value="" selected>No owner</option>
+                                {{-- creates a drop down select with users currently in the database --}}
                                 @foreach ($users as $user)
                                     <option value="{{ $user->id }}">{{ $user->id }} - {{ $user->name }}
                                     </option>
@@ -127,6 +127,7 @@
                         
                         <a href="{{ route('animals.index') }}" class="flex justify-center items-center w-full text-gray-900 px-4 py-3 rounded-md focus:outline-none"><svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                             xmlns="http://www.w3.org/2000/svg">
+                            {{-- cross icon SVG --}}
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M6 18L18 6M6 6l12 12"></path>
                         </svg> Cancel</a>

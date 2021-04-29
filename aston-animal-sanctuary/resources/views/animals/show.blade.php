@@ -40,38 +40,33 @@
                                 @elseif ($animal->image == 1)
                                     {{-- Adapted from https://tailwindcomponents.com/component/click-through-image-gallery --}}
 
-
-
                                         <section class="mx-auto max-w-2xl">
                                             
                                                 <!-- large image on slides -->
-                                                
                                                 @foreach ($images->where('animal_id', $animal->id) as $image)
-                                                    <div class="mySlides hidden">
+                                                    <div class="slides hidden">
                                                         
                                                         <img class="w-full h-auto  object-cover"
                                                         src="{{ asset('storage/images/' . $image->image_location) }}"
                                                         alt="">
                                                     </div>
                                                 @endforeach
+
                                                 <!-- buttons -->
-                                                <a class="absolute left-0 inset-y-0 flex items-center -mt-32 px-4 text-white hover:text-gray-800 cursor-pointer text-3xl font-extrabold" onclick="plusSlides(-1)">❮</a>
-                                                <a class="absolute right-0 inset-y-0 flex items-center -mt-32 px-4 text-white hover:text-gray-800 cursor-pointer text-3xl font-extrabold" onclick="plusSlides(1)">❯</a>
+                                                <a class="absolute left-0 inset-y-0 flex items-center -mt-32 px-4 text-gray-800 cursor-pointer text-3xl font-extrabold" onclick="changeSlide(-1)">❮</a>
+                                                <a class="absolute right-0 inset-y-0 flex items-center -mt-32 px-4 text-gray-800 cursor-pointer text-3xl font-extrabold" onclick="changeSlide(1)">❯</a>
                                         
-                                                <!-- image description -->
+                                                <!-- divider -->
                                                 <div class="text-center text-white font-light tracking-wider bg-gray-400 py-2">
-                                                <p id="caption"></p>
                                                 </div>
                                         
-                                                <!-- smaller images under description -->
+                                                <!-- smaller images -->
                                                 <div class="flex">
-                                                <?php $index = 0; ?>
+                                             
                                                 @foreach ($images->where('animal_id', $animal->id) as $image)
                                                     <div>
-                                                        <?php $index = $index + 1; ?>
-                                                        <img class="w-48 h-48 opacity-50 hover:opacity-100 cursor-pointer"
-                                                        src="{{ asset('storage/images/' . $image->image_location) }}"
-                                                        alt="" onclick="currentSlide($index)">
+                                                        <img class="w-48 h-48 object-cover opacity-50 hover:opacity-100"
+                                                        src="{{ asset('storage/images/' . $image->image_location) }}" alt="">
                                                     </div>
                                                 @endforeach
                                                 
@@ -81,39 +76,33 @@
                                         
                                         
                                             <script>
-                                            //JS to switch slides and replace text in bar//
-                                            var slideIndex = 1;
-                                            showSlides(slideIndex);
-                                        
-                                            function plusSlides(n) {
-                                                showSlides(slideIndex += n);
-                                            }
-                                        
-                                            function currentSlide(n) {
-                                                showSlides(slideIndex = n);
-                                            }
-                                        
-                                            function showSlides(n) {
-                                                var i;
-                                                var slides = document.getElementsByClassName("mySlides");
-                                                var dots = document.getElementsByClassName("description");
-                                                
-                                                if (n > slides.length) {
-                                                slideIndex = 1
-                                                }
-                                                if (n < 1) {
-                                                slideIndex = slides.length
-                                                }
-                                                for (i = 0; i < slides.length; i++) {
-                                                slides[i].style.display = "none";
-                                                }
-                                                for (i = 0; i < dots.length; i++) {
-                                                dots[i].className = dots[i].className.replace(" opacity-100", "");
-                                                }
-                                                slides[slideIndex - 1].style.display = "block";
-                                                dots[slideIndex - 1].className += " opacity-100";
+                                                //JS to switch slides
+                                                var slideIndex = 1;
+                                                showSlides(slideIndex);
                                             
-                                            }
+                                                function changeSlide(n) {
+                                                    showSlides(slideIndex += n);
+                                                }
+                                            
+                                                function showSlides(n) {
+                                                    var i;
+                                                    var slides = document.getElementsByClassName("slides");
+                                                   
+                                                    
+                                                    if (n > slides.length) {
+                                                        slideIndex = 1
+                                                    }
+                                                    if (n < 1) {
+                                                        slideIndex = slides.length
+                                                    }
+                                                    for (i = 0; i < slides.length; i++) {
+                                                        slides[i].style.display = "none";
+                                                    }
+                                                  
+                                                    slides[slideIndex - 1].style.display = "block";
+                                                  
+                                                
+                                                }
                                             </script>
 
                                 @endif
@@ -185,7 +174,8 @@
                             @if ($animal['owner_id'] == null)
                                 <td><a href="{{ route('requests.adopt', ['id' => $animal['id']]) }}"
                                     class="flex btn-primary bg-blue-500 w-full text-white px-4 py-3 rounded-md focus:outline-none" >Adopt this
-                                        animal</a></td>                            @endif
+                                        animal</a></td>                            
+                            @endif
                             @if (Auth::user() != null && Auth::user()->type == 1)
                                 <td> <a href="{{ route('animals.edit', ['animal' => $animal['id']]) }}"
                                         class="w-1/3 text-gray-900 px-4 py-3 rounded-md focus:outline-none">Edit</a>

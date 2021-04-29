@@ -43,6 +43,7 @@
                                 <label class="leading-loose">Animal name</label>
                                 <input type="text"
                                     class="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
+                                    {{-- old() preserves entered data on refresh/validation error --}}
                                     name="name" value="{{ old('name') ? old('name') : $animal->name  }}"
                                     placeholder="Name" />
                             </div>
@@ -53,6 +54,8 @@
                                     <select name="species"
                                         class="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600">
                                         @foreach ($species as $selected)
+                                        {{-- species data provided from AnimalController, 
+                                            if statement to determine current species data for animal being edited --}}
                                         <option value="{{ $selected }}"{{ ( $animal->species == $selected ) ? ' selected' : '' }}>{{ $selected }}</option>
                                         @endforeach
                                     </select>
@@ -96,7 +99,7 @@
                             </div>
 
                             <div class="flex flex-col">
-                                <label class="leading-loose">Image</label>
+                                <label class="leading-loose">Images</label>
 
                                 <input type="file" name="images[]" multiple
                                     class="form-control px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
@@ -108,9 +111,6 @@
                                         </span>
                                     @endforeach
                                 @endif
-                                {{-- <input type="file"
-                            class="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
-                            name="image" placeholder="Image file" /> --}}
                             </div>
 
                             <div class="flex flex-col ">
@@ -144,6 +144,7 @@
                                 class="flex justify-center items-center w-full text-gray-900 px-4 py-3 rounded-md focus:outline-none"><svg
                                     class="w-6 h-6 mr-3" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                     {{-- cross icon SVG --}}
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M6 18L18 6M6 6l12 12"></path>
                                 </svg> Cancel</a>

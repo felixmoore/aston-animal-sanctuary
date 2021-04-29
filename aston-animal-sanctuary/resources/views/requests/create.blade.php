@@ -8,20 +8,20 @@
 @endsection
 @section('content')
 
- <!-- display the errors -->
- @if ($errors->any())
- @component('components.alerts.error')
-     @foreach ($errors->all() as $error)
-         <li>{{ $error }}</li>
-     @endforeach
- @endcomponent
-@endif
-<!-- display the success status -->
-@if (\Session::has('success'))
- @component('components.alerts.success')
-     <p>{{ \Session::get('success') }}</p>
- @endcomponent
-@endif
+    <!-- display the errors -->
+    @if ($errors->any())
+        @component('components.alerts.error')
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        @endcomponent
+    @endif
+    <!-- display the success status -->
+    @if (\Session::has('success'))
+        @component('components.alerts.success')
+            <p>{{ \Session::get('success') }}</p>
+        @endcomponent
+    @endif
     @if (Auth::user() != null)
 
         <div class="relative py-3 sm:max-w-xl sm:mx-auto">

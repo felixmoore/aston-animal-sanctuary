@@ -6,9 +6,9 @@
             
                 <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
                     @if ($requests->isEmpty())
-                <h2 class="flex justify-center font-semibold text-xl text-gray-800 leading-tight"><br/>No requests found.</h2>
-                <p class="flex justify-center text-xl text-gray-800 leading-tight"><br/>You can make an adoption request on an animal's details page!</p>
-            @else
+                        <h2 class="flex justify-center font-semibold text-xl text-gray-800 leading-tight"><br/>No requests found.</h2>
+                        <p class="flex justify-center text-xl text-gray-800 leading-tight"><br/>You can make an adoption request on an animal's details page!</p>
+                    @else
                     <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
                         @if (Auth::user() != null)
 
@@ -131,7 +131,7 @@
                             </tbody>
                         </table>
                             @if ($requests->appends(\Request::except('page')))
-                                {{ $requests->appends(\Request::except('page'))->render() }}
+                                {{ $requests->appends(\Request::except('page'))->render() }} {{-- pagination --}}
                             @endif
                         @else
                             <h2 class="flex justify-center font-semibold text-xl text-gray-800 leading-tight">Please log in to view requests!</h2>

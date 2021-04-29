@@ -138,7 +138,7 @@
                         </tbody>
                     </table>
                     @if ($animals->appends(\Request::except('page')))
-                        {{ $animals->appends(\Request::except('page'))->render() }}
+                        {{ $animals->appends(\Request::except('page'))->render() }} {{-- pagination --}}
                     @endif
                 </div>
             </div>
