@@ -53,12 +53,17 @@
                                             <div class="flex-shrink-0 h-40 w-40">
                                                 
                                                 @if ($animal->image == 0)
+                                                <a href="{{ route('animals.show', ['animal' => $animal->id]) }}"
+                                                    class="text-indigo-600 hover:text-indigo-900">
                                                     <img class="object-cover h-40 w-full rounded-full"
-                                                    src="{{ asset('storage/images/placeholder.png') }}" alt="">
+                                                    src="{{ asset('storage/images/placeholder.png') }}" alt=""></a>
                                                 @elseif ($animal->image == 1)
+                                                <a href="{{ route('animals.show', ['animal' => $animal->id]) }}"
+                                                    class="text-indigo-600 hover:text-indigo-900">
                                                     <img class="object-cover h-40 w-full rounded-full"
                                                     src="{{ asset('storage/images/' . $images->where('animal_id', $animal->id)->first()->image_location ) }}" alt="">
-                                                @endif
+                                                    </a>
+                                                    @endif
                                             </div>
                                             <div class="ml-4">
                                                 <div class="text-lg font-medium text-gray-900">
