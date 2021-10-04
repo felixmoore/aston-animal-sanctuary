@@ -56,12 +56,12 @@
                                                 <a href="{{ route('animals.show', ['animal' => $animal->id]) }}"
                                                     class="text-indigo-600 hover:text-indigo-900">
                                                     <img class="object-cover h-40 w-full rounded-full"
-                                                    src="{{ asset('storage/images/placeholder.png') }}" alt=""></a>
+                                                    src="{{ secure_asset('storage/images/placeholder.png') }}" alt=""></a>
                                                 @elseif ($animal->image == 1)
                                                 <a href="{{ route('animals.show', ['animal' => $animal->id]) }}"
                                                     class="text-indigo-600 hover:text-indigo-900">
                                                     <img class="object-cover h-40 w-full rounded-full"
-                                                    src="{{ asset('storage/images/' . $images->where('animal_id', $animal->id)->first()->image_location ) }}" alt="">
+                                                    src="{{ secure_asset('storage/images/' . $images->where('animal_id', $animal->id)->first()->image_location ) }}" alt="">
                                                     </a>
                                                     @endif
                                             </div>

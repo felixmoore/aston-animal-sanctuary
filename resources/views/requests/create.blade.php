@@ -40,9 +40,9 @@
                                     <tr>
                                         <td colspan='2'>
                                             @if ($animal->image == 0)
-                                                <img class="w-auto h-auto" src="{{ asset('storage/images/placeholder.png') }}" alt="">
+                                                <img class="w-auto h-auto" src="{{ secure_asset('storage/images/placeholder.png') }}" alt="">
                                             @elseif ($animal->image == 1)
-                                                <img class="w-auto h-auto" src="{{ asset('storage/images/' . $images->where('animal_id', $animal->id)->first()->image_location) }}"
+                                                <img class="w-auto h-auto" src="{{ secure_asset('storage/images/' . $images->where('animal_id', $animal->id)->first()->image_location) }}"
                                                     alt="">
                                             @endif
                                         </td>

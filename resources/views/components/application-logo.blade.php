@@ -1,1 +1,1 @@
-<img class="h-10 w-10" src="{{ asset('storage/images/placeholder.png') }}" alt="">
+<img class="h-10 w-10" src="{{ secure_asset('storage/images/placeholder.png') }}" alt="">

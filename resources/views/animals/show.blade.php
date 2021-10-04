@@ -35,7 +35,7 @@
                         <div class="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
                             <div class="flex flex-col">
                                 @if ($animal->image == 0)
-                                    <img class="w-1/3 h-auto" src="{{ asset('storage/images/placeholder.png') }}"
+                                    <img class="w-1/3 h-auto" src="{{ secure_asset('storage/images/placeholder.png') }}"
                                         alt="">
                                 @elseif ($animal->image == 1)
                                     {{-- Adapted from https://tailwindcomponents.com/component/click-through-image-gallery --}}
@@ -47,7 +47,7 @@
                                                     <div class="slides hidden">
                                                         
                                                         <img class="w-full h-auto  object-cover"
-                                                        src="{{ asset('storage/images/' . $image->image_location) }}"
+                                                        src="{{ secure_asset('storage/images/' . $image->image_location) }}"
                                                         alt="">
                                                     </div>
                                                 @endforeach
@@ -66,7 +66,7 @@
                                                 @foreach ($images->where('animal_id', $animal->id) as $image)
                                                     <div>
                                                         <img class="w-48 h-48 object-cover opacity-50 hover:opacity-100"
-                                                        src="{{ asset('storage/images/' . $image->image_location) }}" alt="">
+                                                        src="{{ secure_asset('storage/images/' . $image->image_location) }}" alt="">
                                                     </div>
                                                 @endforeach
                                                 
